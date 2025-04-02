@@ -1,30 +1,28 @@
 NUM_OF_DICE = 6;
 const dices = createArray(NUM_OF_DICE).map((num) => {
-    return createDiceElement(`dice${num}`);
+    return createDiceElement(num);
 });
-let currentButton = dices[0];
-const rollBtn = createButton("btn", "Roll Dice", ["roll"]);
-rollBtn.addEventListener("click", () => randomDice(currentButton));
+const rollBtn = createButton("roll", ["roll"], "Roll Dice");
+rollBtn.addEventListener("click", () =>
+    randomDice(dices ? dices.shift() : null, rollBtn)
+);
 
 const body = document.querySelector("body");
+const wideContainerDices = createContainer("dices", "wide");
+const wideContainerBtn = createContainer("btn", "wide");
+const longContainerBtn = createContainer("btn", "long");
+longContainerBtn.classList.add("spaced");
+longContainerBtn.append(rollBtn);
+wideContainerBtn.append(longContainerBtn);
 
 dices.forEach((dice, ind) => {
-    const longContainer = document.createElement("div");
-    longContainer.classList.add("long-container");
-    longContainer.id = `long-container${ind}`;
-    const container = document.createElement("div");
-    container.classList.add("container");
-    container.id = `container${ind}`;
+    const longContainer = createContainer(ind, "long");
+    const container = createContainer(ind, "normal");
     container.append(dice);
     longContainer.append(container);
-    body.append(longContainer);
+    wideContainerDices.append(longContainer);
     if (ind === 0) return;
     longContainer.classList.add("disable");
 });
-const wideContainerBtn = createWideContainer;
-const wideContainerDices = document.createElement("div");
-wideContainerBtn.classList.add("wide-container");
-wideContainerDices.classList.add("wide-container");
-wideContainer.id = "wide-container";
-wideContainer.append(rollBtn);
-body.append(wideContainer);
+body.append(wideContainerDices);
+body.append(wideContainerBtn);
