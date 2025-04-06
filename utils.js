@@ -62,11 +62,21 @@ const randomDice = (dice, rollBtn) => {
             createProgressBar(diceId);
         longDiceContainer.prepend(progressWrapper);
         let randomPercentage = Math.floor(Math.random() * 100);
-        let currentProgress = 0;
-        const interval = setInterval(() => {
-            if (currentProgress > randomPercentage) {
-                clearInterval(interval);
+        void progress.offsetHeight;
+        progress.style.height = randomPercentage + "%";
 
+        const duration = 1500;
+        const start = performance.now();
+
+        const animateText = (timestamp) => {
+            const elapsed = timestamp - start;
+            const progressValue = Math.min(elapsed / duration, 1);
+            const current = Math.floor(progressValue * randomPercentage);
+            progressText.textContent = current + "%";
+
+            if (progressValue < 1) {
+                requestAnimationFrame(animateText);
+            } else {
                 const loaderDuration = 3000;
                 addLoading(loaderDuration);
 
@@ -74,12 +84,10 @@ const randomDice = (dice, rollBtn) => {
                     setContainerDisable(diceId);
                     rollBtn.disabled = false;
                 }, loaderDuration);
-            } else {
-                currentProgress++;
-                progress.style.height = currentProgress + "%";
-                progressText.textContent = currentProgress + "%";
             }
-        }, 10);
+        };
+
+        requestAnimationFrame(animateText);
     }, 3000);
 };
 
@@ -89,8 +97,8 @@ function setContainerDisable(diceId) {
     const nextLongDiceContainer = document.querySelector(
         idName + `${Number(diceId) + 1}`
     );
-
     currentLongDiceContainer.classList.add("disable");
+    if (!nextLongDiceContainer) return;
     nextLongDiceContainer.classList.remove("disable");
 }
 
