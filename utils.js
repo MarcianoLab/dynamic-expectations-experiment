@@ -74,6 +74,14 @@ const randomDice = (dice, rollBtn) => {
             const current = Math.floor(progressValue * randomPercentage);
             progressText.textContent = current + "%";
 
+            let factor = Math.pow(current / 100, 2.0);
+            const min = 0.0;
+            const max = 0.9;
+            factor = min + factor * (max - min);
+
+            const color = interpolateColor("#2fc9ff", "#012060", factor);
+            progress.style.backgroundColor = color;
+
             if (progressValue < 1) {
                 requestAnimationFrame(animateText);
             } else {
@@ -151,3 +159,31 @@ const setFinalPosition = (random, dice) => {
             break;
     }
 };
+
+function interpolateColor(color1, color2, factor) {
+    const hexToRgb = (hex) => {
+        const bigint = parseInt(hex.slice(1), 16);
+        return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
+    };
+
+    const rgbToHex = (rgb) => {
+        return (
+            "#" +
+            rgb
+                .map((val) => {
+                    const hex = val.toString(16);
+                    return hex.length === 1 ? "0" + hex : hex;
+                })
+                .join("")
+        );
+    };
+
+    const rgb1 = hexToRgb(color1);
+    const rgb2 = hexToRgb(color2);
+
+    const result = rgb1.map((c1, i) =>
+        Math.round(c1 + factor * (rgb2[i] - c1))
+    );
+
+    return rgbToHex(result);
+}
