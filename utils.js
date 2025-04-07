@@ -56,7 +56,6 @@ const randomDice = (dice, rollBtn) => {
     );
     rollBtn.disabled = true;
     rollDice(random, dice);
-
     setTimeout(() => {
         const { progressWrapper, progress, progressText } =
             createProgressBar(diceId);
@@ -85,11 +84,10 @@ const randomDice = (dice, rollBtn) => {
             if (progressValue < 1) {
                 requestAnimationFrame(animateText);
             } else {
-                const loaderDuration = 3000;
-                addLoading(loaderDuration);
+                const loaderDuration = 2000;
+                addLoading(loaderDuration, rollBtn, diceId);
 
                 setTimeout(() => {
-                    setContainerDisable(diceId);
                     rollBtn.disabled = false;
                 }, loaderDuration);
             }
@@ -110,13 +108,20 @@ function setContainerDisable(diceId) {
     nextLongDiceContainer.classList.remove("disable");
 }
 
-function addLoading(duration) {
+function addLoading(duration, rollBtn, diceId) {
+    rollBtn.style.visibility = "hidden";
+
     const loader = createGeneralElement("div", ["loader"], "loader");
     const longContainerBtn = document.querySelector("#long-containerbtn");
-    longContainerBtn.prepend(loader);
     setTimeout(() => {
-        longContainerBtn.removeChild(loader);
-    }, duration);
+        longContainerBtn.prepend(loader);
+
+        setTimeout(() => {
+            longContainerBtn.removeChild(loader);
+            rollBtn.style.visibility = "visible";
+            setContainerDisable(diceId);
+        }, duration);
+    }, 500);
 }
 
 const rollDice = (random, dice) => {
@@ -130,9 +135,12 @@ const rollDice = (random, dice) => {
         dice.style.transform = `rotateX(${xRotation}deg) rotateY(${yRotation}deg)`;
     }, 50);
 
+    const diceAnimationTime =
+        Math.floor(Math.random() * (2000 - 1500 + 1)) + 1500;
+
     setTimeout(() => {
         setFinalPosition(random, dice);
-    }, 2000);
+    }, diceAnimationTime);
 };
 
 const setFinalPosition = (random, dice) => {
