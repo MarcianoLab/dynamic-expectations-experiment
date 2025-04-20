@@ -1,4 +1,8 @@
+IS_REAL = false;
 NUM_OF_DICE = 6;
+CURRENT_SUM = 0;
+GAME_LIST = _.shuffle(GAME_LIST);
+CURRENT_GAME = GAME_LIST[0];
 const dices = createArray(NUM_OF_DICE).map((num) => {
     return createDiceElement(num);
 });
@@ -14,6 +18,9 @@ const longContainerBtn = createContainer("btn", "long");
 longContainerBtn.classList.add("spaced");
 longContainerBtn.append(rollBtn);
 wideContainerBtn.append(longContainerBtn);
+
+const preStartElement = createPreStartElement();
+wideContainerDices.append(preStartElement);
 
 dices.forEach((dice, ind) => {
     const longContainer = createContainer(ind, "long");

@@ -47,56 +47,6 @@ function createDiceElement(id) {
     return dice;
 }
 
-const randomDice = (dice, rollBtn) => {
-    if (!dice) return;
-    const random = Math.floor(Math.random() * 6) + 1;
-    const diceId = dice.id.slice(-1);
-    const longDiceContainer = document.querySelector(
-        "#long-container" + diceId
-    );
-    rollBtn.disabled = true;
-    rollDice(random, dice);
-    setTimeout(() => {
-        const { progressWrapper, progress, progressText } =
-            createProgressBar(diceId);
-        longDiceContainer.prepend(progressWrapper);
-        let randomPercentage = Math.floor(Math.random() * 100);
-        void progress.offsetHeight;
-        progress.style.height = randomPercentage + "%";
-
-        const duration = 1500;
-        const start = performance.now();
-
-        const animateText = (timestamp) => {
-            const elapsed = timestamp - start;
-            const progressValue = Math.min(elapsed / duration, 1);
-            const current = Math.floor(progressValue * randomPercentage);
-            progressText.textContent = current + "%";
-
-            let factor = Math.pow(current / 100, 2.0);
-            const min = 0.0;
-            const max = 0.9;
-            factor = min + factor * (max - min);
-
-            const color = interpolateColor("#2fc9ff", "#012060", factor);
-            progress.style.backgroundColor = color;
-
-            if (progressValue < 1) {
-                requestAnimationFrame(animateText);
-            } else {
-                const loaderDuration = 2000;
-                addLoading(loaderDuration, rollBtn, diceId);
-
-                setTimeout(() => {
-                    rollBtn.disabled = false;
-                }, loaderDuration);
-            }
-        };
-
-        requestAnimationFrame(animateText);
-    }, 3000);
-};
-
 function setContainerDisable(diceId) {
     const idName = "#long-container";
     const currentLongDiceContainer = document.querySelector(idName + diceId);
@@ -113,9 +63,9 @@ function addLoading(duration, rollBtn, diceId) {
 
     const loader = createGeneralElement("div", ["loader"], "loader");
     const longContainerBtn = document.querySelector("#long-containerbtn");
+
     setTimeout(() => {
         longContainerBtn.prepend(loader);
-
         setTimeout(() => {
             longContainerBtn.removeChild(loader);
             rollBtn.style.visibility = "visible";
@@ -195,3 +145,150 @@ function interpolateColor(color1, color2, factor) {
 
     return rgbToHex(result);
 }
+
+function calculateProbability(currentSum, remainingDice, targetSum = 21) {
+    if (currentSum >= targetSum) return 1;
+    if (remainingDice === 0) return currentSum >= targetSum ? 1 : 0;
+
+    let favorableOutcomes = 0;
+    const totalOutcomes = Math.pow(6, remainingDice);
+
+    function countFavorableOutcomes(sum, diceLeft) {
+        if (diceLeft === 0) {
+            if (sum >= targetSum) favorableOutcomes++;
+            return;
+        }
+        for (let i = 1; i <= 6; i++) {
+            countFavorableOutcomes(sum + i, diceLeft - 1);
+        }
+    }
+
+    countFavorableOutcomes(currentSum, remainingDice);
+    return favorableOutcomes / totalOutcomes;
+}
+
+function createPreStartElement() {
+    const longContainer = createContainer("pre-start", "long");
+    const container = createContainer("pre-start", "normal");
+
+    const circle = createGeneralElement(
+        "div",
+        ["dice", "circle"],
+        "pre-start-circle"
+    );
+    circle.innerText = "Pre-start";
+
+    const { progressWrapper, progress, progressText } =
+        createProgressBar("pre-start");
+    const chanceText = createGeneralElement(
+        "div",
+        ["chance-text"],
+        "chance-text"
+    );
+    chanceText.innerText = "Current winning chance";
+    progressWrapper.classList.add("pre-start");
+    progressWrapper.append(chanceText);
+    longContainer.append(progressWrapper);
+    container.append(circle);
+    longContainer.append(container);
+
+    longContainer.style.marginRight = "50px";
+
+    const initialProbability = calculateProbability(0, NUM_OF_DICE) * 100;
+    progress.style.height = initialProbability + 15 + "%";
+    progressText.textContent = Math.round(initialProbability) + "%";
+
+    return longContainer;
+}
+
+function getRollResult(diceId, isReal) {
+    const roll = isReal
+        ? Math.floor(Math.random() * 6) + 1
+        : CURRENT_GAME.diceResults[diceId];
+    CURRENT_SUM += roll;
+    return roll;
+}
+
+const randomDice = (dice, rollBtn) => {
+    if (!dice) return;
+    const diceId = dice.id.slice(-1);
+    const random = getRollResult(diceId, IS_REAL);
+    const longDiceContainer = document.querySelector(
+        "#long-container" + diceId
+    );
+    rollBtn.disabled = true;
+    rollDice(random, dice);
+    setTimeout(() => {
+        const { progressWrapper, progress, progressText } =
+            createProgressBar(diceId);
+        longDiceContainer.prepend(progressWrapper);
+        const remainingDice = NUM_OF_DICE - parseInt(diceId) - 1;
+        const probability =
+            calculateProbability(CURRENT_SUM, remainingDice) * 100;
+        void progress.offsetHeight;
+        progress.style.height = probability + "%";
+
+        const duration = 1500;
+        const start = performance.now();
+
+        const animateText = (timestamp) => {
+            const elapsed = timestamp - start;
+            const progressValue = Math.min(elapsed / duration, 1);
+            const current = Math.floor(progressValue * probability);
+            progressText.textContent = current + "%";
+            const currentDiceContainer = document.querySelector(
+                `#long-container${parseInt(diceId)}`
+            );
+            if (currentDiceContainer) {
+                const chanceText = document.querySelector(".chance-text");
+                if (chanceText) {
+                    currentDiceContainer
+                        .querySelector(".progress-wrapper")
+                        .prepend(chanceText);
+                }
+            }
+
+            let factor = Math.pow(current / 100, 2.0);
+            const min = 0.0;
+            const max = 0.9;
+            factor = min + factor * (max - min);
+
+            const color = interpolateColor("#2fc9ff", "#012060", factor);
+            progress.style.backgroundColor = color;
+
+            if (progressValue < 1) {
+                requestAnimationFrame(animateText);
+            } else {
+                const loaderDuration = 2000;
+
+                addLoading(loaderDuration, rollBtn, diceId);
+
+                setTimeout(() => {
+                    rollBtn.disabled = false;
+                    if (remainingDice <= 0) {
+                        const resultText = createGeneralElement(
+                            "h1",
+                            ["result-text"],
+                            "result-text"
+                        );
+                        resultText.innerText =
+                            CURRENT_SUM >= 21 ? "You Won!" : "You Lost!";
+                        resultText.style.textAlign = "center";
+                        resultText.style.marginBottom = "20px";
+                        resultText.style.fontSize = "32px";
+                        resultText.style.color =
+                            CURRENT_SUM >= 21 ? "#2fc9ff" : "#ff2f2f";
+                        body.prepend(resultText);
+
+                        progress.style.height =
+                            CURRENT_SUM >= 21 ? "100%" : "0%";
+                        progressText.textContent =
+                            CURRENT_SUM >= 21 ? "100%" : "0%";
+                    }
+                }, loaderDuration);
+            }
+        };
+
+        requestAnimationFrame(animateText);
+    }, 3000);
+};
