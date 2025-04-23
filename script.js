@@ -3,6 +3,7 @@ NUM_OF_DICE = 6;
 CURRENT_SUM = 0;
 GAME_LIST = _.shuffle(GAME_LIST);
 CURRENT_GAME = GAME_LIST[0];
+const SURVEY_RESULT = [];
 const dices = createArray(NUM_OF_DICE).map((num) => {
     return createDiceElement(num);
 });
@@ -31,5 +32,10 @@ dices.forEach((dice, ind) => {
     if (ind === 0) return;
     longContainer.classList.add("disable");
 });
-body.append(wideContainerDices);
-body.append(wideContainerBtn);
+
+// const sliderContainer = createContainer("slider", "wide");
+const slider = createCustomSlider(body, CURRENT_GAME.id);
+body.append(slider);
+// body.append(sliderContainer);
+// body.append(wideContainerDices);
+// body.append(wideContainerBtn);

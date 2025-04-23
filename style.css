@@ -6,6 +6,13 @@
     box-sizing: border-box;
 }
 
+h2 {
+    color: #111827;
+    font-size: 24px;
+    margin-bottom: 50px;
+    text-align: center;
+}
+
 body {
     height: 100vh;
     display: flex;
@@ -264,4 +271,99 @@ body {
     text-align: center;
     margin-bottom: 20px;
     font-size: 32px;
+}
+
+.slider-container {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    height: 70px;
+    margin-bottom: 20px;
+}
+
+.slider-track {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 6px;
+    width: 100%;
+    background-color: #e5e7eb;
+    border-radius: 3px;
+}
+
+.circle-slider {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+}
+
+.circle-slider.black {
+    background-color: #111827;
+}
+
+.circle-slider.yellow {
+    width: 18px;
+    height: 18px;
+    background-color: #facc15;
+    border: 2px solid #fef3c7;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    transition: left 0.2s ease;
+}
+
+.circle-slider.yellow:active {
+    cursor: grabbing;
+}
+.circle.yellow:hover {
+    box-shadow: 0 0 6px rgba(255, 255, 0, 0.8);
+}
+
+.label {
+    position: absolute;
+    top: 40px;
+    transform: translateX(-50%);
+    font-size: 20px;
+    margin-top: 20px;
+    color: #374151;
+}
+
+.reminder {
+    color: #dc2626;
+    margin-top: 12px;
+    font-size: 14px;
+    display: none;
+    text-align: center;
+}
+
+.slider-page {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f9fafb;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+}
+
+.slider-parent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.circle,
+.label,
+.slider-container {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }

@@ -74,7 +74,7 @@ function addLoading(duration, rollBtn, diceId) {
     }, 500);
 }
 
-const rollDice = (random, dice) => {
+function rollDice(random, dice) {
     const xRotation = 720 + Math.random() * 360;
     const yRotation = 720 + Math.random() * 360;
 
@@ -91,9 +91,9 @@ const rollDice = (random, dice) => {
     setTimeout(() => {
         setFinalPosition(random, dice);
     }, diceAnimationTime);
-};
+}
 
-const setFinalPosition = (random, dice) => {
+function setFinalPosition(random, dice) {
     dice.style.transition = "transform 0.5s ease-out";
 
     switch (random) {
@@ -116,7 +116,7 @@ const setFinalPosition = (random, dice) => {
             dice.style.transform = "rotateX(0deg) rotateY(-90deg)";
             break;
     }
-};
+}
 
 function interpolateColor(color1, color2, factor) {
     const hexToRgb = (hex) => {
@@ -209,7 +209,7 @@ function getRollResult(diceId, isReal) {
     return roll;
 }
 
-const randomDice = (dice, rollBtn) => {
+function randomDice(dice, rollBtn) {
     if (!dice) return;
     const diceId = dice.id.slice(-1);
     const random = getRollResult(diceId, IS_REAL);
@@ -291,4 +291,113 @@ const randomDice = (dice, rollBtn) => {
 
         requestAnimationFrame(animateText);
     }, 3000);
-};
+}
+
+function createCircle(color, left, isMovable = false) {
+    const circle = createGeneralElement(
+        "div",
+        ["circle-slider", `${color}`],
+        isMovable ? "sliderThumb" : ""
+    );
+    circle.style.left = left;
+    return circle;
+}
+
+function createLabel(text, left) {
+    const label = createGeneralElement("div", ["label"]);
+    label.textContent = text;
+    label.style.left = left;
+    return label;
+}
+
+function createCustomSlider(body, gameId) {
+    parent = createGeneralElement("div", ["slider-parent"], "slider-parent");
+    const title = createGeneralElement("h2", [], "slider-title");
+    title.textContent = "How happy are you at this moment?";
+
+    const sliderContainer = createGeneralElement(
+        "div",
+        ["slider-container"],
+        "sliderContainer"
+    );
+
+    const track = createGeneralElement("div", ["slider-track"], "sliderTrack");
+    const thumb = createCircle("yellow", "50%", true);
+    const sliderElements = [
+        track,
+        createCircle("black", "0%"),
+        createLabel("very unhappy", "0%"),
+        createCircle("black", "100%"),
+        createLabel("very happy", "100%"),
+        thumb,
+    ];
+    
+    sliderElements.forEach((element) => {
+        sliderContainer.appendChild(element);
+    });
+
+    const button = createGeneralElement("button", ["roll"], "continueBtn");
+    button.textContent = "Continue";
+    button.disabled = true;
+
+    const reminder = createGeneralElement("div", ["reminder"], "reminderText");
+    reminder.textContent =
+        "Please move the slider according to the instructions";
+
+    body.classList.add("slider-page");
+
+    const elements = [title, sliderContainer, button, reminder];
+    elements.forEach((element) => {
+        parent.appendChild(element);
+    });
+
+    let hasMoved = false;
+    let reminderTimeout = setTimeout(() => {
+        if (!hasMoved) {
+            reminder.style.display = "block";
+        }
+    }, 4000);
+
+    let currentSliderValue = 50;
+
+    thumb.addEventListener("mousedown", (e) => {
+        e.preventDefault();
+        thumb.style.transition = "none";
+        if (!hasMoved) {
+            hasMoved = true;
+            button.disabled = false;
+            reminder.style.display = "none";
+            clearTimeout(reminderTimeout);
+        }
+
+        const rect = sliderContainer.getBoundingClientRect();
+        const thumbWidth = thumb.offsetWidth;
+
+        const onMouseMove = (moveEvent) => {
+            moveEvent.preventDefault();
+            let x = moveEvent.clientX - rect.left;
+            x = Math.max(0, Math.min(rect.width, x));
+            const percent = (x / rect.width) * 100;
+            thumb.style.left = `calc(${percent}% - ${thumbWidth / 2}px)`;
+            currentSliderValue = Math.round(percent);
+        };
+
+        const onMouseUp = () => {
+            thumb.style.transition = "left 0.2s ease";
+            document.removeEventListener("mousemove", onMouseMove);
+            document.removeEventListener("mouseup", onMouseUp);
+        };
+
+        document.addEventListener("mousemove", onMouseMove);
+        document.addEventListener("mouseup", onMouseUp);
+    });
+
+    button.addEventListener("click", () => {
+        const data = {};
+        data[gameId] = currentSliderValue;
+        SURVEY_RESULT.push(data);
+        console.log("Survey result:", SURVEY_RESULT);
+    });
+
+    return parent;
+}
