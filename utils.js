@@ -278,12 +278,20 @@ function randomDice(dice, rollBtn) {
                         resultText.style.fontSize = "32px";
                         resultText.style.color =
                             CURRENT_SUM >= 21 ? "#2fc9ff" : "#ff2f2f";
-                        body.prepend(resultText);
+                        app.prepend(resultText);
 
                         progress.style.height =
                             CURRENT_SUM >= 21 ? "100%" : "0%";
                         progressText.textContent =
                             CURRENT_SUM >= 21 ? "100%" : "0%";
+
+                        rollBtn.innerText = "Continue";
+                        rollBtn.removeEventListener("click", () =>
+                            randomDice(dice, rollBtn)
+                        );
+                        rollBtn.addEventListener("click", () => {
+                            showSliderScreen();
+                        });
                     }
                 }, loaderDuration);
             }
@@ -310,8 +318,12 @@ function createLabel(text, left) {
     return label;
 }
 
-function createCustomSlider(body, gameId) {
-    parent = createGeneralElement("div", ["slider-parent"], "slider-parent");
+function createCustomSlider(app) {
+    const parent = createGeneralElement(
+        "div",
+        ["slider-parent"],
+        "slider-parent"
+    );
     const title = createGeneralElement("h2", [], "slider-title");
     title.textContent = "How happy are you at this moment?";
 
@@ -331,7 +343,7 @@ function createCustomSlider(body, gameId) {
         createLabel("very happy", "100%"),
         thumb,
     ];
-    
+
     sliderElements.forEach((element) => {
         sliderContainer.appendChild(element);
     });
@@ -344,7 +356,7 @@ function createCustomSlider(body, gameId) {
     reminder.textContent =
         "Please move the slider according to the instructions";
 
-    body.classList.add("slider-page");
+    // app.classList.add("slider-page");
 
     const elements = [title, sliderContainer, button, reminder];
     elements.forEach((element) => {
@@ -394,9 +406,10 @@ function createCustomSlider(body, gameId) {
 
     button.addEventListener("click", () => {
         const data = {};
-        data[gameId] = currentSliderValue;
+        data[CURRENT_GAME.id] = currentSliderValue;
         SURVEY_RESULT.push(data);
         console.log("Survey result:", SURVEY_RESULT);
+        startNextGame();
     });
 
     return parent;

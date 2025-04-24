@@ -8,12 +8,19 @@
 
 h2 {
     color: #111827;
-    font-size: 24px;
+    font-size: 35px;
     margin-bottom: 50px;
     text-align: center;
 }
 
 body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.app {
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -343,7 +350,6 @@ body {
 
 .slider-page {
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f9fafb;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -366,4 +372,18 @@ body {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
+}
+
+.completion-message {
+    font-size: 35px;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.completion-message-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
 }
