@@ -1,9 +1,12 @@
-IS_REAL = false;
-NUM_OF_DICE = 6;
-CURRENT_SUM = 0;
-GAME_LIST = _.shuffle(GAME_LIST);
-CURRENT_GAME = GAME_LIST[0];
-const SURVEY_RESULT = [];
+const IS_REAL = false;
+const NUM_OF_DICE = 6;
+const NUM_OF_GAMES = 5;
+let CURRENT_SUM = 0;
+const GAME_LIST = IS_REAL
+    ? createGameArray(NUM_OF_GAMES, NUM_OF_DICE)
+    : _.shuffle(PREPARED_GAME_LIST);
+let CURRENT_GAME = GAME_LIST[0];
+const GAME_DATA = {};
 const body = document.querySelector("body");
 const app = createGeneralElement("div", ["app"], "app");
 body.append(app);
@@ -11,12 +14,20 @@ body.append(app);
 function showDiceScreen() {
     app.innerHTML = "";
     app.classList.remove("slider-page");
+
+    const gameId = CURRENT_GAME.id;
+    GAME_DATA[gameId] = {
+        gameId: gameId,
+        diceResults: CURRENT_GAME.diceResults,
+        probabilities: [],
+    };
+
     const dices = createArray(NUM_OF_DICE).map((num) => {
         return createDiceElement(num);
     });
     const rollBtn = createButton("roll", ["roll"], "Roll Dice");
     rollBtn.addEventListener("click", () =>
-        randomDice(dices ? dices.shift() : null, rollBtn)
+        randomDice(dices ? dices.shift() : null, rollBtn, gameId)
     );
 
     const wideContainerDices = createContainer("dices", "wide");
@@ -42,11 +53,11 @@ function showDiceScreen() {
     app.append(wideContainerBtn);
 }
 
-function showSliderScreen() {
+function showSliderScreen(gameId) {
     app.innerHTML = "";
     app.classList.add("slider-page");
 
-    const slider = createCustomSlider(app);
+    const slider = createCustomSlider(app, gameId);
     app.append(slider);
 }
 
@@ -75,6 +86,8 @@ function startNextGame() {
         completionMessage.innerText = "All games completed!";
         completionMessageContainer.append(completionMessage);
         app.append(completionMessageContainer);
+        console.log("GAME_DATA", GAME_DATA);
+        window.postMessage(GAME_DATA, "*");
     }
 }
 

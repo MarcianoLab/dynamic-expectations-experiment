@@ -201,18 +201,16 @@ function createPreStartElement() {
     return longContainer;
 }
 
-function getRollResult(diceId, isReal) {
-    const roll = isReal
-        ? Math.floor(Math.random() * 6) + 1
-        : CURRENT_GAME.diceResults[diceId];
+function getRollResult(diceId) {
+    const roll = CURRENT_GAME.diceResults[diceId];
     CURRENT_SUM += roll;
     return roll;
 }
 
-function randomDice(dice, rollBtn) {
+function randomDice(dice, rollBtn, gameId) {
     if (!dice) return;
     const diceId = dice.id.slice(-1);
-    const random = getRollResult(diceId, IS_REAL);
+    const random = getRollResult(diceId);
     const longDiceContainer = document.querySelector(
         "#long-container" + diceId
     );
@@ -227,6 +225,9 @@ function randomDice(dice, rollBtn) {
             calculateProbability(CURRENT_SUM, remainingDice) * 100;
         void progress.offsetHeight;
         progress.style.height = probability + "%";
+
+        const currentGame = GAME_DATA[gameId];
+        currentGame.probabilities.push({ diceId, probability });
 
         const duration = 1500;
         const start = performance.now();
@@ -271,26 +272,26 @@ function randomDice(dice, rollBtn) {
                             ["result-text"],
                             "result-text"
                         );
-                        resultText.innerText =
-                            CURRENT_SUM >= 21 ? "You Won!" : "You Lost!";
+                        const isWin = CURRENT_SUM >= 21;
+                        resultText.innerText = isWin ? "You Won!" : "You Lost!";
                         resultText.style.textAlign = "center";
                         resultText.style.marginBottom = "20px";
                         resultText.style.fontSize = "32px";
-                        resultText.style.color =
-                            CURRENT_SUM >= 21 ? "#2fc9ff" : "#ff2f2f";
+                        resultText.style.color = isWin ? "#2fc9ff" : "#ff2f2f";
                         app.prepend(resultText);
 
-                        progress.style.height =
-                            CURRENT_SUM >= 21 ? "100%" : "0%";
-                        progressText.textContent =
-                            CURRENT_SUM >= 21 ? "100%" : "0%";
+                        progress.style.height = isWin ? "100%" : "0%";
+                        progressText.textContent = isWin ? "100%" : "0%";
+
+                        GAME_DATA[gameId].sum = CURRENT_SUM;
+                        GAME_DATA[gameId].result = isWin ? "win" : "loss";
 
                         rollBtn.innerText = "Continue";
                         rollBtn.removeEventListener("click", () =>
                             randomDice(dice, rollBtn)
                         );
                         rollBtn.addEventListener("click", () => {
-                            showSliderScreen();
+                            showSliderScreen(gameId);
                         });
                     }
                 }, loaderDuration);
@@ -318,7 +319,7 @@ function createLabel(text, left) {
     return label;
 }
 
-function createCustomSlider(app) {
+function createCustomSlider(app, gameId) {
     const parent = createGeneralElement(
         "div",
         ["slider-parent"],
@@ -405,12 +406,22 @@ function createCustomSlider(app) {
     });
 
     button.addEventListener("click", () => {
-        const data = {};
-        data[CURRENT_GAME.id] = currentSliderValue;
-        SURVEY_RESULT.push(data);
-        console.log("Survey result:", SURVEY_RESULT);
+        const currentGame = GAME_DATA[gameId];
+        currentGame.surveyResult = currentSliderValue;
         startNextGame();
     });
 
     return parent;
+}
+
+function createGameArray(numOfGames, numOfDice) {
+    return Array.from({ length: numOfGames }, (_, i) => i + 1).map((num) => {
+        return {
+            id: `game${num}`,
+            diceResults: Array.from(
+                { length: numOfDice },
+                () => Math.floor(Math.random() * 6) + 1
+            ),
+        };
+    });
 }
