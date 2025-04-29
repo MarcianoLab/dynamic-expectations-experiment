@@ -10,13 +10,9 @@ function createGeneralElement(element, classes, id) {
 }
 
 function createContainer(id, containerType) {
-    className = containerType + "-container";
-    const wideContainer = createGeneralElement(
-        "div",
-        [className],
-        className + id
-    );
-    return wideContainer;
+    const className = containerType + "-container";
+    const container = createGeneralElement("div", [className], className + id);
+    return container;
 }
 
 function createButton(id, classes, text) {
@@ -33,7 +29,7 @@ function createProgressBar(id) {
     const [progressWrapper, progress, progressText] = elements;
     progressText.innerText = "0%";
     progressWrapper.appendChild(progress);
-    progressWrapper.appendChild(progressText);
+    progress.appendChild(progressText);
     return { progressWrapper, progress, progressText };
 }
 
@@ -48,30 +44,35 @@ function createDiceElement(id) {
 }
 
 function setContainerDisable(diceId) {
-    const idName = "#long-container";
-    const currentLongDiceContainer = document.querySelector(idName + diceId);
-    const nextLongDiceContainer = document.querySelector(
-        idName + `${Number(diceId) + 1}`
+    const normalContainer = "#normal-container";
+    const longContainer = "#long-container";
+    const currentNormalDiceContainer = document.querySelector(
+        normalContainer + diceId
     );
-    currentLongDiceContainer.classList.add("disable");
+    const nextLongDiceContainer = document.querySelector(
+        longContainer + `${Number(diceId) + 1}`
+    );
+    const nextNormalDiceContainer = document.querySelector(
+        normalContainer + `${Number(diceId) + 1}`
+    );
+    currentNormalDiceContainer.classList.add("disable");
     if (!nextLongDiceContainer) return;
     nextLongDiceContainer.classList.remove("disable");
+    nextNormalDiceContainer.classList.remove("disable");
 }
 
 function addLoading(duration, rollBtn, diceId) {
-    rollBtn.style.visibility = "hidden";
-
+    const rollBtnParent = rollBtn.parentElement;
+    rollBtnParent.removeChild(rollBtn);
     const loader = createGeneralElement("div", ["loader"], "loader");
     const longContainerBtn = document.querySelector("#long-containerbtn");
+    longContainerBtn.prepend(loader);
 
     setTimeout(() => {
-        longContainerBtn.prepend(loader);
-        setTimeout(() => {
-            longContainerBtn.removeChild(loader);
-            rollBtn.style.visibility = "visible";
-            setContainerDisable(diceId);
-        }, duration);
-    }, 500);
+        longContainerBtn.removeChild(loader);
+        rollBtnParent.appendChild(rollBtn);
+        setContainerDisable(diceId);
+    }, duration);
 }
 
 function rollDice(random, dice) {
@@ -186,16 +187,16 @@ function createPreStartElement() {
         "chance-text"
     );
     chanceText.innerText = "Current winning chance";
-    progressWrapper.classList.add("pre-start");
-    progressWrapper.append(chanceText);
+    progress.appendChild(chanceText);
     longContainer.append(progressWrapper);
     container.append(circle);
     longContainer.append(container);
 
-    longContainer.style.marginRight = "50px";
+    longContainer.style.marginRight = "20px";
 
     const initialProbability = calculateProbability(0, NUM_OF_DICE) * 100;
-    progress.style.height = initialProbability + 15 + "%";
+    const maxHeight = window.innerHeight * 0.0035;
+    progress.style.height = initialProbability * maxHeight + "px";
     progressText.textContent = Math.round(initialProbability) + "%";
 
     return longContainer;
@@ -209,6 +210,13 @@ function getRollResult(diceId) {
 
 function randomDice(dice, rollBtn, gameId) {
     if (!dice) return;
+    if (!IS_STARTED) {
+        const preStartNormalContainer = document.querySelector(
+            "#normal-containerpre-start"
+        );
+        preStartNormalContainer.classList.add("disable");
+        IS_STARTED = true;
+    }
     const diceId = dice.id.slice(-1);
     const random = getRollResult(diceId);
     const longDiceContainer = document.querySelector(
@@ -223,8 +231,9 @@ function randomDice(dice, rollBtn, gameId) {
         const remainingDice = NUM_OF_DICE - parseInt(diceId) - 1;
         const probability =
             calculateProbability(CURRENT_SUM, remainingDice) * 100;
+        const maxHeight = window.innerHeight * 0.0035;
         void progress.offsetHeight;
-        progress.style.height = probability + "%";
+        progress.style.height = probability * maxHeight + "px";
 
         const currentGame = GAME_DATA[gameId];
         currentGame.probabilities.push({ diceId, probability });
@@ -244,7 +253,7 @@ function randomDice(dice, rollBtn, gameId) {
                 const chanceText = document.querySelector(".chance-text");
                 if (chanceText) {
                     currentDiceContainer
-                        .querySelector(".progress-wrapper")
+                        .querySelector(".progress")
                         .prepend(chanceText);
                 }
             }
@@ -276,16 +285,21 @@ function randomDice(dice, rollBtn, gameId) {
                         resultText.innerText = isWin ? "You Won!" : "You Lost!";
                         resultText.style.textAlign = "center";
                         resultText.style.marginBottom = "20px";
+                        resultText.style.position = "absolute";
+                        resultText.style.top = "40px";
+
                         resultText.style.fontSize = "32px";
                         resultText.style.color = isWin ? "#2fc9ff" : "#ff2f2f";
                         app.prepend(resultText);
-
-                        progress.style.height = isWin ? "100%" : "0%";
+                        const maxHeight = window.innerHeight * 0.0035;
+                        progress.style.height = isWin
+                            ? 100 * maxHeight + "px"
+                            : "0px";
                         progressText.textContent = isWin ? "100%" : "0%";
 
                         GAME_DATA[gameId].sum = CURRENT_SUM;
                         GAME_DATA[gameId].result = isWin ? "win" : "loss";
-
+                        IS_STARTED = false;
                         rollBtn.innerText = "Continue";
                         rollBtn.removeEventListener("click", () =>
                             randomDice(dice, rollBtn)

@@ -7,6 +7,7 @@ const GAME_LIST = IS_REAL
     : _.shuffle(PREPARED_GAME_LIST);
 let CURRENT_GAME = GAME_LIST[0];
 const GAME_DATA = {};
+let IS_STARTED = false;
 const body = document.querySelector("body");
 const app = createGeneralElement("div", ["app"], "app");
 body.append(app);
@@ -37,7 +38,6 @@ function showDiceScreen() {
     const wideContainerDices = createContainer("dices", "wide");
     const wideContainerBtn = createContainer("btn", "wide");
     const longContainerBtn = createContainer("btn", "long");
-    longContainerBtn.classList.add("spaced");
     longContainerBtn.append(rollBtn);
     wideContainerBtn.append(longContainerBtn);
 
