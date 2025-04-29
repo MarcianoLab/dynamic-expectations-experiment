@@ -25,12 +25,9 @@ function showDiceScreen() {
     for (let i = 0; i < NUM_OF_DICE; i++) {
         numArray.push(i);
     }
-    console.log(numArray);
     const dices = numArray.map((num) => {
-        console.log("num", num);
         return createDiceElement(num);
     });
-    console.log("dices", dices);
 
     const rollBtn = createButton("roll", ["roll"], "Roll Dice");
     rollBtn.addEventListener("click", () => {

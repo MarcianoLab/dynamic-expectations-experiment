@@ -209,17 +209,11 @@ function getRollResult(diceId) {
 
 function randomDice(dice, rollBtn, gameId) {
     if (!dice) return;
-    console.log("dice", dice);
-    const diceIdNew = dice.id;
-    console.log("diceIdNew", diceIdNew);
     const diceId = dice.id.slice(-1);
-    console.log("diceId", diceId);
     const random = getRollResult(diceId);
-    console.log("diceId", diceId);
     const longDiceContainer = document.querySelector(
         "#long-container" + diceId
     );
-    console.log("longDiceContainer", longDiceContainer);
     rollBtn.disabled = true;
     rollDice(random, dice);
     setTimeout(() => {
