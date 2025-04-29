@@ -1,5 +1,3 @@
-
-
 function createArray(length) {
     return Array.from({ length }, (_, i) => i);
 }
@@ -443,6 +441,10 @@ const body = document.querySelector("body");
 const app = createGeneralElement("div", ["app"], "app");
 body.append(app);
 
+let dices = createArray(NUM_OF_DICE).map((num) => {
+    return { dice: createDiceElement(num), id: num };
+});
+
 function showDiceScreen() {
     app.innerHTML = "";
     app.classList.remove("slider-page");
@@ -454,7 +456,7 @@ function showDiceScreen() {
         probabilities: [],
     };
 
-    const dices = createArray(NUM_OF_DICE).map((num) => {
+    dices = createArray(NUM_OF_DICE).map((num) => {
         return { dice: createDiceElement(num), id: num };
     });
     const rollBtn = createButton("roll", ["roll"], "Roll Dice");
