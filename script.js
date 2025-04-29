@@ -1,15 +1,4 @@
-const IS_REAL = false;
-const NUM_OF_DICE = 6;
-const NUM_OF_GAMES = 5;
-let CURRENT_SUM = 0;
-const GAME_LIST = IS_REAL
-    ? createGameArray(NUM_OF_GAMES, NUM_OF_DICE)
-    : _.shuffle(PREPARED_GAME_LIST);
-let CURRENT_GAME = GAME_LIST[0];
-const GAME_DATA = {};
-const body = document.querySelector("body");
-const app = createGeneralElement("div", ["app"], "app");
-body.append(app);
+
 
 function createArray(length) {
     return Array.from({ length }, (_, i) => i);
@@ -440,6 +429,19 @@ function createGameArray(numOfGames, numOfDice) {
         };
     });
 }
+
+const IS_REAL = false;
+const NUM_OF_DICE = 6;
+const NUM_OF_GAMES = 5;
+let CURRENT_SUM = 0;
+const GAME_LIST = IS_REAL
+    ? createGameArray(NUM_OF_GAMES, NUM_OF_DICE)
+    : _.shuffle(PREPARED_GAME_LIST);
+let CURRENT_GAME = GAME_LIST[0];
+const GAME_DATA = {};
+const body = document.querySelector("body");
+const app = createGeneralElement("div", ["app"], "app");
+body.append(app);
 
 function showDiceScreen() {
     app.innerHTML = "";
