@@ -431,7 +431,7 @@ function createGameArray(numOfGames, numOfDice) {
 }
 
 const IS_REAL = false;
-const NUM_OF_DICE = 6;
+const NUM_OF_DICE = 1;
 const NUM_OF_GAMES = 5;
 let CURRENT_SUM = 0;
 const GAME_LIST = IS_REAL
@@ -442,6 +442,10 @@ const GAME_DATA = {};
 const body = document.querySelector("body");
 const app = createGeneralElement("div", ["app"], "app");
 body.append(app);
+
+let dices = createArray(NUM_OF_DICE).map((num) => {
+    return { dice: createDiceElement(num), id: num };
+});
 
 function showDiceScreen() {
     app.innerHTML = "";
@@ -454,7 +458,7 @@ function showDiceScreen() {
         probabilities: [],
     };
 
-    const dices = createArray(NUM_OF_DICE).map((num) => {
+    dices = createArray(NUM_OF_DICE).map((num) => {
         return { dice: createDiceElement(num), id: num };
     });
     const rollBtn = createButton("roll", ["roll"], "Roll Dice");
