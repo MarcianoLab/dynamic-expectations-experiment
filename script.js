@@ -21,8 +21,12 @@ function showDiceScreen() {
         diceResults: CURRENT_GAME.diceResults,
         probabilities: [],
     };
-
-    const dices = createArray(NUM_OF_DICE).map((num) => {
+    const numArray = [];
+    for (let i = 0; i < NUM_OF_DICE; i++) {
+        numArray.push(i);
+    }
+    console.log(numArray);
+    const dices = numArray.map((num) => {
         console.log("num", num);
         return createDiceElement(num);
     });
