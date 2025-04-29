@@ -209,6 +209,7 @@ function getRollResult(diceId) {
 
 function randomDice(dice, rollBtn, gameId) {
     if (!dice) return;
+    console.log("dice", dice);
     const diceIdNew = dice.id;
     console.log("diceIdNew", diceIdNew);
     const diceId = dice.id.slice(-1);
