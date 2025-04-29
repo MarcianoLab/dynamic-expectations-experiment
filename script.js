@@ -92,4 +92,4 @@ function startNextGame() {
     }
 }
 
-// showDiceScreen();
+showDiceScreen();
