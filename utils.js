@@ -207,9 +207,9 @@ function getRollResult(diceId) {
     return roll;
 }
 
-function randomDice(dice, rollBtn, gameId) {
+function randomDice(dice, diceId, rollBtn, gameId) {
     if (!dice) return;
-    const diceId = dice.id.slice(-1);
+    // const diceId = dice.id.slice(-1);
     const random = getRollResult(diceId);
     console.log("diceId", diceId);
     const longDiceContainer = document.querySelector(

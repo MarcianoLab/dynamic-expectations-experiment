@@ -23,11 +23,16 @@ function showDiceScreen() {
     };
 
     const dices = createArray(NUM_OF_DICE).map((num) => {
-        return createDiceElement(num);
+        return {dice: createDiceElement(num), id: num};
     });
     const rollBtn = createButton("roll", ["roll"], "Roll Dice");
     rollBtn.addEventListener("click", () =>
-        randomDice(dices ? dices.shift() : null, rollBtn, gameId)
+    {
+        const dice = dices ? dices.shift() : null
+        const diceElement = dice.dice;
+        const diceId = dice.id;
+     return   randomDice(diceElement, diceId, rollBtn, gameId)
+    }
     );
 
     const wideContainerDices = createContainer("dices", "wide");
@@ -43,7 +48,7 @@ function showDiceScreen() {
     dices.forEach((dice, ind) => {
         const longContainer = createContainer(ind, "long");
         const container = createContainer(ind, "normal");
-        container.append(dice);
+        container.append(dice.dice);
         longContainer.append(container);
         wideContainerDices.append(longContainer);
         if (ind === 0) return;
