@@ -23,8 +23,10 @@ function showDiceScreen() {
     };
 
     const dices = createArray(NUM_OF_DICE).map((num) => {
+        console.log("num", num);
         return createDiceElement(num);
     });
+    console.log("dices", dices);
 
     const rollBtn = createButton("roll", ["roll"], "Roll Dice");
     rollBtn.addEventListener("click", () => {
