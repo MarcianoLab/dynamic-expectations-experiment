@@ -1,6 +1,6 @@
-const IS_REAL = true;
-const NUM_OF_DICE = 1;
-const NUM_OF_GAMES = 1;
+const IS_REAL = false;
+const NUM_OF_DICE = 6;
+const NUM_OF_GAMES = 5;
 let CURRENT_SUM = 0;
 const GAME_LIST = IS_REAL
     ? createGameArray(NUM_OF_GAMES, NUM_OF_DICE)
@@ -38,7 +38,7 @@ function showDiceScreen() {
     const wideContainerDices = createContainer("dices", "wide");
     const wideContainerBtn = createContainer("btn", "wide");
     const longContainerBtn = createContainer("btn", "long");
-    
+
     longContainerBtn.append(rollBtn);
     wideContainerBtn.append(longContainerBtn);
 
