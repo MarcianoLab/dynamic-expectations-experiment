@@ -1,6 +1,6 @@
-const IS_REAL = false;
-const NUM_OF_DICE = 6;
-const NUM_OF_GAMES = 5;
+const IS_REAL = true;
+const NUM_OF_DICE = 1;
+const NUM_OF_GAMES = 1;
 let CURRENT_SUM = 0;
 const GAME_LIST = IS_REAL
     ? createGameArray(NUM_OF_GAMES, NUM_OF_DICE)
@@ -91,9 +91,13 @@ function startNextGame() {
         completionMessage.innerText = "All games completed!";
         completionMessageContainer.append(completionMessage);
         app.append(completionMessageContainer);
-        console.log("GAME_DATA", GAME_DATA);
         window.postMessage(GAME_DATA, "*");
     }
 }
 
-showDiceScreen();
+showDiceScreen(); 
+
+
+// <script type="text/javascript">
+	//showDiceScreen();
+//</script>
