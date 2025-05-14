@@ -1,7 +1,3 @@
-function createArray(length) {
-    return Array.from({ length }, (_, i) => i);
-}
-
 function createGeneralElement(element, classes, id) {
     const newElement = document.createElement(element);
     newElement.classList.add(...classes);
@@ -191,6 +187,7 @@ function createPreStartElement() {
     longContainer.append(progressWrapper);
     container.append(circle);
     longContainer.append(container);
+    addCurrentScore("pre-start", longContainer, "visible");
 
     longContainer.style.marginRight = "20px";
 
@@ -270,43 +267,19 @@ function randomDice(dice, rollBtn, gameId) {
                 requestAnimationFrame(animateText);
             } else {
                 const loaderDuration = 2000;
-
+                changeCurrentScore(diceId);
                 addLoading(loaderDuration, rollBtn, diceId);
 
                 setTimeout(() => {
                     rollBtn.disabled = false;
                     if (remainingDice <= 0) {
-                        const resultText = createGeneralElement(
-                            "h1",
-                            ["result-text"],
-                            "result-text"
+                        finishGame(
+                            rollBtn,
+                            gameId,
+                            dice,
+                            progress,
+                            progressText
                         );
-                        const isWin = CURRENT_SUM >= 21;
-                        resultText.innerText = isWin ? "You Won!" : "You Lost!";
-                        resultText.style.textAlign = "center";
-                        resultText.style.marginBottom = "20px";
-                        resultText.style.position = "absolute";
-                        resultText.style.top = "40px";
-
-                        resultText.style.fontSize = "32px";
-                        resultText.style.color = isWin ? "#2fc9ff" : "#ff2f2f";
-                        app.prepend(resultText);
-                        const maxHeight = window.innerHeight * 0.0035;
-                        progress.style.height = isWin
-                            ? 100 * maxHeight + "px"
-                            : "0px";
-                        progressText.textContent = isWin ? "100%" : "0%";
-
-                        GAME_DATA[gameId].sum = CURRENT_SUM;
-                        GAME_DATA[gameId].result = isWin ? "win" : "loss";
-                        IS_STARTED = false;
-                        rollBtn.innerText = "Continue";
-                        rollBtn.removeEventListener("click", () =>
-                            randomDice(dice, rollBtn)
-                        );
-                        rollBtn.addEventListener("click", () => {
-                            showSliderScreen(gameId);
-                        });
                     }
                 }, loaderDuration);
             }
@@ -314,6 +287,29 @@ function randomDice(dice, rollBtn, gameId) {
 
         requestAnimationFrame(animateText);
     }, 3000);
+}
+
+function finishGame(rollBtn, gameId, dice, progress, progressText) {
+    const isWin = CURRENT_SUM >= 21;
+    const resultText = isWin ? "You Won!" : "You Lost!";
+    const resultTextColor = isWin ? "#2fc9ff" : "#ff2f2f";
+
+    const modal = createModal(resultText, resultTextColor);
+    app.appendChild(modal);
+    modal.classList.add("open");
+
+    const maxHeight = window.innerHeight * 0.0035;
+    progress.style.height = isWin ? 100 * maxHeight + "px" : "0px";
+    progressText.textContent = isWin ? "100%" : "0%";
+
+    GAME_DATA[gameId].sum = CURRENT_SUM;
+    GAME_DATA[gameId].result = isWin ? "win" : "loss";
+    IS_STARTED = false;
+    rollBtn.innerText = "Continue";
+    rollBtn.removeEventListener("click", () => randomDice(dice, rollBtn));
+    rollBtn.addEventListener("click", () => {
+        showSliderScreen(gameId);
+    });
 }
 
 function createCircle(color, left, isMovable = false) {
@@ -333,14 +329,14 @@ function createLabel(text, left) {
     return label;
 }
 
-function createCustomSlider(app, gameId) {
+function createCustomSlider(gameId) {
     const parent = createGeneralElement(
         "div",
         ["slider-parent"],
         "slider-parent"
     );
     const title = createGeneralElement("h2", [], "slider-title");
-    title.textContent = "How happy are you at this moment?";
+    title.textContent = "How satisfied are you at this moment?";
 
     const sliderContainer = createGeneralElement(
         "div",
@@ -353,9 +349,9 @@ function createCustomSlider(app, gameId) {
     const sliderElements = [
         track,
         createCircle("black", "0%"),
-        createLabel("very unhappy", "0%"),
+        createLabel("very dissatisfied", "0%"),
         createCircle("black", "100%"),
-        createLabel("very happy", "100%"),
+        createLabel("very satisfied", "100%"),
         thumb,
     ];
 
@@ -370,8 +366,6 @@ function createCustomSlider(app, gameId) {
     const reminder = createGeneralElement("div", ["reminder"], "reminderText");
     reminder.textContent =
         "Please move the slider according to the instructions";
-
-    // app.classList.add("slider-page");
 
     const elements = [title, sliderContainer, button, reminder];
     elements.forEach((element) => {
@@ -438,4 +432,42 @@ function createGameArray(numOfGames, numOfDice) {
             ),
         };
     });
+}
+
+function addCurrentScore(diceId, longContainer, visibility = "hidden") {
+    const currentScore = createGeneralElement(
+        "h3",
+        ["current-score"],
+        "current-score" + diceId
+    );
+    currentScore.innerText = "0/21";
+    currentScore.style.visibility = visibility;
+    longContainer.append(currentScore);
+}
+
+function changeCurrentScore(diceId) {
+    const currentScore = document.querySelector("#current-score" + diceId);
+    currentScore.innerText = CURRENT_SUM + "/21";
+    currentScore.style.visibility = "visible";
+}
+
+function createModal(text, textColor) {
+    const modal = createGeneralElement("div", ["modal"], "modal");
+    const modalContent = createGeneralElement(
+        "div",
+        ["modal-inner"],
+        "modal-inner"
+    );
+    const closeButton = createButton("close", ["modal-btn"], "Close");
+    closeButton.addEventListener("click", () => {
+        modal.classList.remove("open");
+    });
+
+    const modalText = createGeneralElement("h2", ["modal-text"], "modal-text");
+    modalText.innerText = text;
+    modalText.style.color = textColor;
+    modalContent.appendChild(modalText);
+    modalContent.appendChild(closeButton);
+    modal.appendChild(modalContent);
+    return modal;
 }

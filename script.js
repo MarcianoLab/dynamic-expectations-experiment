@@ -50,6 +50,7 @@ function showDiceScreen() {
         container.append(dice);
         longContainer.append(container);
         wideContainerDices.append(longContainer);
+        addCurrentScore(ind, longContainer);
         if (ind === 0) return;
         longContainer.classList.add("disable");
     });
@@ -61,7 +62,7 @@ function showSliderScreen(gameId) {
     app.innerHTML = "";
     app.classList.add("slider-page");
 
-    const slider = createCustomSlider(app, gameId);
+    const slider = createCustomSlider(gameId);
     app.append(slider);
 }
 
