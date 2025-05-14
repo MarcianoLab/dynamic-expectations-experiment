@@ -424,15 +424,27 @@ function createCustomSlider(gameId) {
 }
 
 function createGameArray(numOfGames, numOfDice) {
-    return Array.from({ length: numOfGames }, (_, i) => i + 1).map((num) => {
+    const numArray = [];
+    const diceArray = [];
+    for (let i = 0; i < numOfGames; i++) {
+        numArray.push(i);
+    }
+    for (let i = 0; i < numOfDice; i++) {
+        diceArray.push(i);
+    }
+
+    const gamesArray = numArray.map((num) => {
+        const diceResults = diceArray.map((diceNum) => {
+            return Math.floor(Math.random() * 6) + 1;
+        });
+
         return {
-            id: `game${num}`,
-            diceResults: Array.from(
-                { length: numOfDice },
-                () => Math.floor(Math.random() * 6) + 1
-            ),
+            id: `game${num + 1}`,
+            diceResults: diceResults,
         };
     });
+
+    return gamesArray;
 }
 
 function addCurrentScore(diceId, longContainer, visibility = "hidden") {
