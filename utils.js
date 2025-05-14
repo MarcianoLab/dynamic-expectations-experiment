@@ -233,7 +233,8 @@ function randomDice(dice, rollBtn, gameId) {
         progress.style.height = probability * maxHeight + "px";
 
         const currentGame = GAME_DATA[gameId];
-        currentGame.probabilities.push({ diceId, probability });
+
+        currentGame.probabilities.push(Math.round(probability));
 
         const duration = 1500;
         const start = performance.now();
@@ -304,7 +305,7 @@ function finishGame(rollBtn, gameId, dice, progress, progressText) {
 
     GAME_DATA[gameId].sum = CURRENT_SUM;
     GAME_DATA[gameId].result = isWin ? "win" : "loss";
-    writeToLogs(gameId, GAME_DATA[gameId]);
+
     IS_STARTED = false;
     rollBtn.innerText = "Continue";
     rollBtn.removeEventListener("click", () => randomDice(dice, rollBtn));
@@ -417,6 +418,9 @@ function createCustomSlider(gameId) {
     button.addEventListener("click", () => {
         const currentGame = GAME_DATA[gameId];
         currentGame.surveyResult = currentSliderValue;
+        Object.keys(currentGame).forEach((data) => {
+            writeToLogs(`${gameId}-${data}`, currentGame[data]);
+        });
         startNextGame();
     });
 

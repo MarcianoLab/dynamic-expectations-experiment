@@ -38,6 +38,7 @@ function showDiceScreen() {
     const wideContainerDices = createContainer("dices", "wide");
     const wideContainerBtn = createContainer("btn", "wide");
     const longContainerBtn = createContainer("btn", "long");
+    
     longContainerBtn.append(rollBtn);
     wideContainerBtn.append(longContainerBtn);
 
@@ -76,21 +77,6 @@ function startNextGame() {
     } else {
         app.innerHTML = "";
         app.classList.remove("slider-page");
-
-        const completionMessage = createGeneralElement(
-            "h1",
-            ["completion-message"],
-            "completion-message"
-        );
-
-        const completionMessageContainer = createGeneralElement(
-            "div",
-            ["completion-message-container"],
-            "completion-message-container"
-        );
-        completionMessage.innerText = "All games completed!";
-        completionMessageContainer.append(completionMessage);
-        app.append(completionMessageContainer);
         window.postMessage("next", "*");
     }
 }
