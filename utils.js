@@ -304,6 +304,7 @@ function finishGame(rollBtn, gameId, dice, progress, progressText) {
 
     GAME_DATA[gameId].sum = CURRENT_SUM;
     GAME_DATA[gameId].result = isWin ? "win" : "loss";
+    writeToLogs(gameId, GAME_DATA[gameId]);
     IS_STARTED = false;
     rollBtn.innerText = "Continue";
     rollBtn.removeEventListener("click", () => randomDice(dice, rollBtn));
@@ -470,4 +471,9 @@ function createModal(text, textColor) {
     modalContent.appendChild(closeButton);
     modal.appendChild(modalContent);
     return modal;
+}
+
+function writeToLogs(field, value) {
+    window.console.log(field, ":", value);
+    window.postMessage([field, value], "*");
 }

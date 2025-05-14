@@ -91,7 +91,6 @@ function startNextGame() {
         completionMessage.innerText = "All games completed!";
         completionMessageContainer.append(completionMessage);
         app.append(completionMessageContainer);
-        window.postMessage(GAME_DATA, "*");
         window.postMessage("next", "*");
     }
 }
