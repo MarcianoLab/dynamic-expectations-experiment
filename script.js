@@ -92,12 +92,8 @@ function startNextGame() {
         completionMessageContainer.append(completionMessage);
         app.append(completionMessageContainer);
         window.postMessage(GAME_DATA, "*");
+        window.postMessage("next", "*");
     }
 }
 
-showDiceScreen(); 
-
-
-// <script type="text/javascript">
-	//showDiceScreen();
-//</script>
+showDiceScreen();
