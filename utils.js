@@ -295,7 +295,7 @@ function finishGame(rollBtn, gameId, dice, progress, progressText) {
     const resultText = isWin ? "You Won!" : "You Lost!";
     const resultTextColor = isWin ? "#2fc9ff" : "#ff2f2f";
 
-    const modal = createModal(resultText, resultTextColor);
+    const modal = createModal(resultText, resultTextColor, gameId);
     app.appendChild(modal);
     modal.classList.add("open");
 
@@ -307,11 +307,7 @@ function finishGame(rollBtn, gameId, dice, progress, progressText) {
     GAME_DATA[gameId].result = isWin ? "win" : "loss";
 
     IS_STARTED = false;
-    rollBtn.innerText = "Continue";
     rollBtn.removeEventListener("click", () => randomDice(dice, rollBtn));
-    rollBtn.addEventListener("click", () => {
-        showSliderScreen(gameId);
-    });
 }
 
 function createCircle(color, left, isMovable = false) {
@@ -453,38 +449,54 @@ function createGameArray(numOfGames, numOfDice) {
 
 function addCurrentScore(diceId, longContainer, visibility = "hidden") {
     const currentScore = createGeneralElement(
-        "h3",
-        ["current-score"],
+        "p",
+        [],
         "current-score" + diceId
     );
-    currentScore.innerText = "0/21";
+    const maxScore = createGeneralElement(
+        "b",
+        ["current-score"],
+        "max-score" + diceId
+    );
+    const boldScore = createGeneralElement(
+        "b",
+        ["bold-score"],
+        "bold-score" + diceId
+    );
+
+    maxScore.textContent = "/21";
+    boldScore.textContent = "0";
+    currentScore.appendChild(boldScore);
+    currentScore.appendChild(maxScore);
     currentScore.style.visibility = visibility;
     longContainer.append(currentScore);
 }
 
 function changeCurrentScore(diceId) {
+    const boldScore = document.querySelector("#bold-score" + diceId);
     const currentScore = document.querySelector("#current-score" + diceId);
-    currentScore.innerText = CURRENT_SUM + "/21";
+    boldScore.innerText = CURRENT_SUM;
     currentScore.style.visibility = "visible";
 }
 
-function createModal(text, textColor) {
+function createModal(text, textColor, gameId) {
     const modal = createGeneralElement("div", ["modal"], "modal");
     const modalContent = createGeneralElement(
         "div",
         ["modal-inner"],
         "modal-inner"
     );
-    const closeButton = createButton("close", ["modal-btn"], "Close");
-    closeButton.addEventListener("click", () => {
+    const continueButton = createButton("close", ["modal-btn"], "Continue");
+    continueButton.addEventListener("click", () => {
         modal.classList.remove("open");
+        showSliderScreen(gameId);
     });
 
     const modalText = createGeneralElement("h2", ["modal-text"], "modal-text");
     modalText.innerText = text;
     modalText.style.color = textColor;
     modalContent.appendChild(modalText);
-    modalContent.appendChild(closeButton);
+    modalContent.appendChild(continueButton);
     modal.appendChild(modalContent);
     return modal;
 }
