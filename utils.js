@@ -57,37 +57,17 @@ function setContainerDisable(diceId) {
     nextNormalDiceContainer.classList.remove("disable");
 }
 
-function addLoading(duration, rollBtn, diceId) {
-    const rollBtnParent = rollBtn.parentElement;
-    rollBtnParent.removeChild(rollBtn);
-    const loader = createGeneralElement("div", ["loader"], "loader");
-    const longContainerBtn = document.querySelector("#long-containerbtn");
-    longContainerBtn.prepend(loader);
-
-    setTimeout(() => {
-        longContainerBtn.removeChild(loader);
-        rollBtnParent.appendChild(rollBtn);
-        setContainerDisable(diceId);
-    }, duration);
-}
-
 function rollDice(random, dice) {
-    const xRotation = 720 + Math.random() * 360;
-    const yRotation = 720 + Math.random() * 360;
+    const xRotation = 1440 + Math.random() * 360;
+    const yRotation = 1440 + Math.random() * 360;
 
-    dice.style.animation = "none";
-    dice.style.transition = "transform 2s ease-out";
+    void dice.offsetHeight;
 
-    setTimeout(() => {
-        dice.style.transform = `rotateX(${xRotation}deg) rotateY(${yRotation}deg)`;
-    }, 50);
-
-    const diceAnimationTime =
-        Math.floor(Math.random() * (2000 - 1500 + 1)) + 1500;
+    dice.style.transform = `rotateX(${xRotation}deg) rotateY(${yRotation}deg)`;
 
     setTimeout(() => {
         setFinalPosition(random, dice);
-    }, diceAnimationTime);
+    }, 500);
 }
 
 function setFinalPosition(random, dice) {
@@ -267,27 +247,19 @@ function randomDice(dice, rollBtn, gameId) {
             if (progressValue < 1) {
                 requestAnimationFrame(animateText);
             } else {
-                const loaderDuration = 2000;
                 changeCurrentScore(diceId);
-                addLoading(loaderDuration, rollBtn, diceId);
 
-                setTimeout(() => {
-                    rollBtn.disabled = false;
-                    if (remainingDice <= 0) {
-                        finishGame(
-                            rollBtn,
-                            gameId,
-                            dice,
-                            progress,
-                            progressText
-                        );
-                    }
-                }, loaderDuration);
+                rollBtn.disabled = false;
+                setContainerDisable(diceId);
+
+                if (remainingDice <= 0) {
+                    finishGame(rollBtn, gameId, dice, progress, progressText);
+                }
             }
         };
 
         requestAnimationFrame(animateText);
-    }, 3000);
+    }, 1000);
 }
 
 function finishGame(rollBtn, gameId, dice, progress, progressText) {
