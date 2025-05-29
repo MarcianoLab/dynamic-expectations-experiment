@@ -18,7 +18,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    background-color: #f2f2f2;
+    background-color: #dddddd;
 }
 
 .app {
