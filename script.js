@@ -18,6 +18,11 @@ function showDiceScreen() {
     document.body.classList.add("body-style");
     document.body.style.backgroundColor = "#dddddd";
     document.body.style.height = "100vh";
+    const qualtricsElements = document.getElementsByClassName("SkinInner")[0];
+    console.log("qualtricsElements", qualtricsElements);
+    if (qualtricsElements) {
+        qualtricsElements.style.backgroundColor = "#dddddd";
+    }
 
     const gameId = CURRENT_GAME.id;
     GAME_DATA[gameId] = {
