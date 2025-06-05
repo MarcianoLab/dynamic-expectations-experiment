@@ -65,7 +65,7 @@ body {
     border-radius: clamp(8px, 2vw, 20px);
     border: 2px solid black;
     transform-style: preserve-3d;
-    background: linear-gradient(145deg, #d8c5c5, #ffffff);
+    background: linear-gradient(145deg, #ffffff, #ffffff);
 }
 
 .face::before {
@@ -245,7 +245,7 @@ body {
     border-radius: 50%;
     width: clamp(70px, 10vw, 110px);
     height: clamp(70px, 10vw, 110px);
-    background: linear-gradient(145deg, #d8c5c5, #fff);
+    background: linear-gradient(145deg, #fff, #fff);
     z-index: 10;
 }
 
@@ -284,7 +284,7 @@ body {
     transform: translateY(-50%);
     height: 6px;
     width: 100%;
-    background-color: #e5e7eb;
+    background-color: #fff;
     border-radius: 3px;
 }
 
