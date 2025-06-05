@@ -15,6 +15,7 @@ body.append(app);
 function showDiceScreen() {
     app.innerHTML = "";
     app.classList.remove("slider-page");
+    body.classList.add("body-style");
 
     const gameId = CURRENT_GAME.id;
     GAME_DATA[gameId] = {
