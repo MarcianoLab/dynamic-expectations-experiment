@@ -15,7 +15,9 @@ body.append(app);
 function showDiceScreen() {
     app.innerHTML = "";
     app.classList.remove("slider-page");
-    body.classList.add("body-style");
+    document.body.classList.add("body-style");
+    document.body.style.backgroundColor = "#dddddd";
+    document.body.style.height = "100vh";
 
     const gameId = CURRENT_GAME.id;
     GAME_DATA[gameId] = {
