@@ -1,16 +1,26 @@
-const IS_REAL = false;
-const NUM_OF_DICE = 6;
-const NUM_OF_GAMES = 5;
-let CURRENT_SUM = 0;
-const GAME_LIST = IS_REAL
-    ? createGameArray(NUM_OF_GAMES, NUM_OF_DICE)
-    : _.shuffle(PREPARED_GAME_LIST);
-let CURRENT_GAME = GAME_LIST[0];
-const GAME_DATA = {};
-let IS_STARTED = false;
-const body = document.querySelector("body");
-const app = createGeneralElement("div", ["app"], "app");
-body.append(app);
+////////////////////////
+///// ONLY FOR DEV /////
+////////////////////////
+
+// const IS_REAL = false;
+// const NUM_OF_DICE = 6;
+// const NUM_OF_GAMES = 5;
+// let CURRENT_SUM = 0;
+//// PRACTICE_GAME ////
+// const GAME_LIST = [PRACTICE_GAME];
+// let CURRENT_GAME = GAME_LIST[0];
+/////////////////////
+//// ACTUAL GAME ////
+// const GAME_LIST = IS_REAL
+//     ? createGameArray(NUM_OF_GAMES, NUM_OF_DICE)
+//     : _.shuffle(PREPARED_GAME_LIST);
+// let CURRENT_GAME = GAME_LIST[0];
+/////////////////////
+// const GAME_DATA = {};
+// let IS_STARTED = false;
+// const body = document.querySelector("body");
+// const app = createGeneralElement("div", ["app"], "app");
+// body.append(app);
 
 function showDiceScreen() {
     app.innerHTML = "";
@@ -88,5 +98,7 @@ function startNextGame() {
         window.postMessage("next", "*");
     }
 }
-
-showDiceScreen();
+////////////////////////
+///// ONLY FOR DEV /////
+////////////////////////
+// showDiceScreen();
