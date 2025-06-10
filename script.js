@@ -30,12 +30,12 @@ class DiceGame {
         this.app.innerHTML = "";
         this.app.classList.remove("slider-page");
         document.body.classList.add("body-style");
-        document.body.style.backgroundColor = "#dddddd";
+        document.body.style.backgroundColor = "#fff";
         document.body.style.height = "100vh";
         const qualtricsElements =
             document.getElementsByClassName("SkinInner")[0];
         if (qualtricsElements) {
-            qualtricsElements.style.backgroundColor = "#dddddd";
+            qualtricsElements.style.backgroundColor = "#fff";
         }
 
         const gameId = this.CURRENT_GAME.id;
