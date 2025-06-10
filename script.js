@@ -103,6 +103,11 @@ class DiceGame {
         } else {
             this.app.innerHTML = "";
             this.app.classList.remove("slider-page");
+            const qualtricsElements =
+                document.getElementsByClassName("SkinInner")[0];
+            if (qualtricsElements) {
+                qualtricsElements.style.backgroundColor = "#fff";
+            }
             document.body.style.backgroundColor = "#fff";
             window.postMessage("next", "*");
         }
