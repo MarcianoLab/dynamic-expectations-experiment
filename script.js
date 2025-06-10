@@ -30,12 +30,12 @@ class DiceGame {
         this.app.innerHTML = "";
         this.app.classList.remove("slider-page");
         document.body.classList.add("body-style");
-        document.body.style.backgroundColor = "#fff";
+        document.body.style.backgroundColor = "#dddddd";
         document.body.style.height = "100vh";
         const qualtricsElements =
             document.getElementsByClassName("SkinInner")[0];
         if (qualtricsElements) {
-            qualtricsElements.style.backgroundColor = "#fff";
+            qualtricsElements.style.backgroundColor = "#dddddd";
         }
 
         const gameId = this.CURRENT_GAME.id;
@@ -103,6 +103,7 @@ class DiceGame {
         } else {
             this.app.innerHTML = "";
             this.app.classList.remove("slider-page");
+            document.body.style.backgroundColor = "#fff";
             window.postMessage("next", "*");
         }
     }
