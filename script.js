@@ -8,6 +8,8 @@ class DiceGame {
         this.CURRENT_GAME = {};
         this.GAME_DATA = {};
         this.IS_STARTED = false;
+        this.startTime = 0;
+        this.endTime = 0;
         this.app = this.createGeneralElement("div", ["app"], "app");
 
         const body = document.querySelector("body");
@@ -54,10 +56,13 @@ class DiceGame {
 
         const rollBtn = this.createButton("roll", ["roll"], "Roll Dice");
         rollBtn.addEventListener("click", () => {
+            this.endTime = performance.now();
+            const rt = this.endTime - this.startTime;
             return this.randomDice(
                 dices ? dices.shift() : null,
                 rollBtn,
-                gameId
+                gameId,
+                rt,
             );
         });
 
@@ -313,7 +318,7 @@ class DiceGame {
         return roll;
     }
 
-    randomDice(dice, rollBtn, gameId) {
+    randomDice(dice, rollBtn, gameId, rt) {
         if (!dice) return;
         if (!this.IS_STARTED) {
             const preStartNormalContainer = document.querySelector(
@@ -383,6 +388,8 @@ class DiceGame {
                     this.changeCurrentScore(diceId);
 
                     rollBtn.disabled = false;
+                    this.GAME_DATA[gameId][`dice${parseInt(diceId) + 1}-rt`] = rt;
+                    this.startTime = performance.now();
                     this.setContainerDisable(diceId);
 
                     if (remainingDice <= 0) {
@@ -441,6 +448,7 @@ class DiceGame {
     }
 
     createCustomSlider(gameId) {
+        
         const parent = this.createGeneralElement(
             "div",
             ["slider-parent"],
@@ -494,6 +502,7 @@ class DiceGame {
         elements.forEach((element) => {
             parent.appendChild(element);
         });
+        const startTime = performance.now();
 
         let hasMoved = false;
         let reminderTimeout = setTimeout(() => {
@@ -537,8 +546,11 @@ class DiceGame {
         });
 
         button.addEventListener("click", () => {
+            const endTime = performance.now();
+            const rt = endTime - startTime;
             const currentGame = this.GAME_DATA[gameId];
             currentGame.surveyResult = currentSliderValue;
+            currentGame.surveyRt = rt;
             Object.keys(currentGame).forEach((data) => {
                 this.writeToLogs(`${gameId}-${data}`, currentGame[data]);
             });
