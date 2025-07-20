@@ -53,7 +53,7 @@ class DiceGame {
         const dices = numArray.map((num) => {
             return this.createDiceElement(num);
         });
-
+        this.startTime = performance.now();
         const rollBtn = this.createButton("roll", ["roll"], "Roll Dice");
         rollBtn.addEventListener("click", () => {
             this.endTime = performance.now();
